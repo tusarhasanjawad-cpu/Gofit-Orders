@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gofit Cloud Kitchen - Order Now</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 500px; background: white; padding: 20px; border-radius: 10px; margin: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h2 { color: #2d5a27; text-align: center; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #25D366; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        button:hover { background-color: #128C7E; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Gofit Cloud Kitchen</h2>
+    <p style="text-align:center; font-size: 0.9em;">Jamal Khan, Chittagong</p>
+    
+    <form id="orderForm">
+        <label>Select Your Meal:</label>
+        <select id="meal" required>
+            <option value="Hummus with grilled chicken">Hummus with grilled chicken (500 BDT)</option>
+            <option value="Mediterranean ground beef stir fry">Mediterranean ground beef stir fry</option>
+            <option value="Chicken ceaser salad">Chicken ceaser salad</option>
+            <option value="Glass noodles with king prawn">Glass noodles with king prawn</option>
+            <option value="Grilled Lemon Herb Mediterranean Chicken Salad">Grilled Lemon Herb Salad</option>
+            <option value="Chicken Burrito Bowl">Chicken Burrito Bowl</option>
+            <option value="Tomato poached fish">Tomato poached fish</option>
+            <option value="Thai Lettuce Wraps - Larb Gai">Thai Lettuce Wraps</option>
+            <option value="Tuna Salad Sandwich">Tuna Salad Sandwich</option>
+            <option value="Tuna Mayo Rice Bowl">Tuna Mayo Rice Bowl</option>
+        </select>
+
+        <label>Delivery Date:</label>
+        <input type="date" id="date" required>
+
+        <label>Delivery Time (Kitchen starts at 12 PM):</label>
+        <input type="time" id="time" min="12:00" required>
+
+        <label>Full Delivery Address:</label>
+        <textarea id="address" rows="3" placeholder="House #, Road #, Area" required></textarea>
+
+        <label>Payment Method:</label>
+        <select id="payment">
+            <option value="Cash">Cash</option>
+            <option value="bKash">bKash</option>
+        </select>
+
+        <p style="font-size: 0.8em; color: #666;">*Note: Delivery charge to be paid by customer.</p>
+        
+        <button type="button" onclick="sendToWhatsApp()">Send Order via WhatsApp</button>
+    </form>
+</div>
+
+<script>
+function sendToWhatsApp() {
+    const phone = "8801830365120"; // Your helpline number
+    const meal = document.getElementById('meal').value;
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const address = document.getElementById('address').value;
+    const payment = document.getElementById('payment').value;
+
+    const message = `*New Order Request*%0A%0A` +
+                    `*Meal:* ${meal}%0A` +
+                    `*Date:* ${date}%0A` +
+                    `*Time:* ${time}%0A` +
+                    `*Address:* ${address}%0A` +
+                    `*Payment:* ${payment}%0A%0A` +
+                    `_Please confirm my order!_`;
+
+    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+}
+</script>
+
+</body>
+</html>
