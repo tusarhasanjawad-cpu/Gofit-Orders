@@ -3,125 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gofit Cloud Kitchen - Order Now</title>
+    <title>Cloud Kitchen Order - Jamal Khan</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f0f2f5; color: #333; }
-        .container { max-width: 450px; background: white; padding: 25px; border-radius: 15px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { color: #1a472a; text-align: center; margin-bottom: 5px; }
-        p.location { text-align: center; font-size: 0.9em; color: #666; margin-bottom: 20px; }
-        label { display: block; margin: 15px 0 5px; font-weight: 600; font-size: 0.9em; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-        .note { font-size: 0.8em; color: #d9534f; margin-top: 5px; font-weight: 500; }
-        .summary-box { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #25D366; }
-        .summary-box p { margin: 5px 0; font-size: 0.9em; }
-        button { width: 100%; padding: 15px; background-color: #25D366; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        button:hover { background-color: #128C7E; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        :root { --primary: #25D366; --error: #d93025; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; }
+        .meal-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; background: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        select, input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        .meal-select { flex-grow: 1; }
+        .qty-input { width: 60px; }
+        .del-btn { background: #ff4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
+        .add-btn { background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="date"], input[type="time"] { width: 100%; box-sizing: border-box; }
+        .summary { background: #f1f1f1; padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .warning { color: var(--error); font-size: 12px; margin-top: 5px; display: none; }
+        .invalid { border-color: var(--error) !important; background-color: #fff8f8; }
+        #send-btn { width: 100%; padding: 15px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        #send-btn:disabled { background: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Gofit Cloud Kitchen</h2>
-    <p class="location">Jamal Khan, Chittagong</p>
+    <h2>Cloud Kitchen - Jamal Khan</h2>
+    <p style="text-align: center; font-size: 14px;">Helpline: 01830365120</p>
+    <hr>
+
+    <div id="meal-container">
+        </div>
     
-    <form id="orderForm">
-        <label>Select Your Meal:</label>
-        <select id="meal" required>
-            <option value="">-- Choose a Meal --</option>
-            <option value="Hummus with grilled chicken">Hummus with grilled chicken (500 BDT)</option>
-            <option value="Mediterranean ground beef stir fry">Mediterranean ground beef stir fry</option>
-            <option value="Chicken ceaser salad">Chicken ceaser salad</option>
-            <option value="Glass noodles with king prawn">Glass noodles with king prawn</option>
-            <option value="Grilled Lemon Herb Mediterranean Chicken Salad">Grilled Lemon Herb Salad</option>
-            <option value="Chicken Burrito Bowl">Chicken Burrito Bowl</option>
-            <option value="Tomato poached fish">Tomato poached fish</option>
-            <option value="Thai Lettuce Wraps - Larb Gai">Thai Lettuce Wraps</option>
-            <option value="Tuna Salad Sandwich">Tuna Salad Sandwich</option>
-            <option value="Tuna Mayo Rice Bowl">Tuna Mayo Rice Bowl</option>
-        </select>
+    <button class="add-btn" onclick="addMealRow()">+ Add More</button>
 
-        <label>Quantity:</label>
-        <input type="number" id="quantity" min="1" placeholder="How many meals?" required>
+    <div class="form-group">
+        <label>Delivery Date</label>
+        <input type="date" id="delivery-date" onchange="validateForm()">
+        <p id="date-warn" class="warning">Previous dates are not selectable.</p>
+    </div>
 
-        <label>Delivery Date:</label>
-        <input type="date" id="date" required>
+    <div class="form-group">
+        <label>Delivery Time (1:00 PM - 9:00 PM)</label>
+        <input type="time" id="delivery-time" onchange="validateForm()">
+        <p id="time-warn" class="warning">Orders must be between 1 PM - 9 PM and 2 hours in advance.</p>
+    </div>
 
-        <label>Delivery Time (1 PM - 9 PM):</label>
-        <input type="time" id="time" required>
-        <p class="note">*Orders must be placed at least 2 hours in advance.</p>
+    <div class="form-group">
+        <label>Delivery Address</label>
+        <input type="text" id="delivery-address" placeholder="House/Flat, Road, Area" oninput="validateForm()">
+    </div>
 
-        <label>Full Delivery Address:</label>
-        <textarea id="address" rows="2" placeholder="House, Road, Area" required></textarea>
-
-        <label>Payment Method:</label>
-        <select id="payment" required>
+    <div class="form-group">
+        <label>Payment Method</label>
+        <select id="payment-method" style="width: 100%;">
             <option value="Cash">Cash</option>
             <option value="bKash">bKash</option>
         </select>
+    </div>
 
-        <div class="summary-box">
-            <strong>Order Summary:</strong>
-            <p id="summaryText">Please fill in the details above...</p>
-            <p style="color: #555; font-style: italic;">Note: Delivery charge will be added with this amount.</p>
-        </div>
-        
-        <button type="button" id="sendBtn" onclick="validateAndSend()">Send Order to WhatsApp</button>
-    </form>
+    <div class="summary">
+        <strong>Order Summary:</strong>
+        <div id="summary-list"></div>
+        <hr>
+        <strong>Subtotal: BDT <span id="subtotal">0</span></strong>
+        <p style="font-size: 12px; color: #666; margin-top: 5px;">* Delivery charge will be added to this amount</p>
+    </div>
+
+    <button id="send-btn" onclick="sendWhatsApp()" disabled>Send Order via WhatsApp</button>
 </div>
 
 <script>
-function validateAndSend() {
-    const meal = document.getElementById('meal').value;
-    const qty = document.getElementById('quantity').value;
-    const dateInput = document.getElementById('date').value;
-    const timeInput = document.getElementById('time').value;
-    const address = document.getElementById('address').value;
-    const payment = document.getElementById('payment').value;
+    const menu = {
+        "1": { name: "Hummus with Grilled Chicken & Veggies", price: 500 },
+        "2": { name: "Mediterranean Ground Beef Stir Fry", price: 700 },
+        "3": { name: "Chicken Caesar Salad", price: 450 },
+        "4": { name: "Glass Noodles with King Prawn", price: 750 },
+        "5": { name: "Grilled Lemon Herb Med. Chicken Salad", price: 800 },
+        "6": { name: "Chicken Burrito Bowl", price: 450 },
+        "7": { name: "Tomato Poached Fish with Chile Oil", price: 600 },
+        "8": { name: "Thai Lettuce Wraps - Larb Gai", price: 400 },
+        "9": { name: "Tuna Salad Sandwich (Brown Bread)", price: 450 },
+        "10": { name: "Tuna Mayo Rice Bowl", price: 400 }
+    };
 
-    // 1. Check if all fields are filled
-    if (!meal || !qty || !dateInput || !timeInput || !address) {
-        alert("Please fill in all information before sending.");
-        return;
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('delivery-date').setAttribute('min', today);
+
+    function addMealRow() {
+        const container = document.getElementById('meal-container');
+        const div = document.createElement('div');
+        div.className = 'meal-row';
+        
+        let options = '<option value="">Select a Meal</option>';
+        for (let id in menu) {
+            options += `<option value="${id}">${menu[id].name} - BDT ${menu[id].price}</option>`;
+        }
+
+        div.innerHTML = `
+            <select class="meal-select" onchange="validateForm()">${options}</select>
+            <input type="number" class="qty-input" value="1" min="1" max="5" oninput="validateForm()">
+            <button class="del-btn" onclick="this.parentElement.remove(); validateForm()">✕</button>
+        `;
+        container.appendChild(div);
+        validateForm();
     }
 
-    // 2. Validate Time (1 PM to 9 PM)
-    const [hours, minutes] = timeInput.split(':').map(Number);
-    if (hours < 13 || hours >= 21) {
-        alert("Delivery time must be between 1:00 PM and 9:00 PM.");
-        return;
+    function validateForm() {
+        let isValid = true;
+        let subtotal = 0;
+        let summaryHtml = "";
+        
+        // Validate Meals
+        const rows = document.querySelectorAll('.meal-row');
+        rows.forEach(row => {
+            const mealId = row.querySelector('.meal-select').value;
+            const qty = parseInt(row.querySelector('.qty-input').value);
+            
+            if (!mealId || isNaN(qty) || qty < 1 || qty > 5) {
+                isValid = false;
+            } else {
+                const item = menu[mealId];
+                subtotal += item.price * qty;
+                summaryHtml += `<div>${item.name} x ${qty} = ${item.price * qty}</div>`;
+            }
+        });
+
+        if (rows.length === 0) isValid = false;
+
+        // Validate Date & Time
+        const dateVal = document.getElementById('delivery-date').value;
+        const timeVal = document.getElementById('delivery-time').value;
+        const addressVal = document.getElementById('delivery-address').value;
+
+        const timeWarn = document.getElementById('time-warn');
+        if (timeVal) {
+            const hour = parseInt(timeVal.split(':')[0]);
+            const now = new Date();
+            const selectedDate = new Date(dateVal + 'T' + timeVal);
+            const diffInHours = (selectedDate - now) / (1000 * 60 * 60);
+
+            if (hour < 13 || hour >= 21 || diffInHours < 2) {
+                isValid = false;
+                timeWarn.style.display = 'block';
+            } else {
+                timeWarn.style.display = 'none';
+            }
+        } else {
+            isValid = false;
+        }
+
+        if (!dateVal || !addressVal) isValid = false;
+
+        // Update UI
+        document.getElementById('subtotal').innerText = subtotal;
+        document.getElementById('summary-list').innerHTML = summaryHtml;
+        document.getElementById('send-btn').disabled = !isValid;
     }
 
-    // 3. Validate 2-hour Lead Time
-    const orderDateTime = new Date(`${dateInput}T${timeInput}`);
-    const now = new Date();
-    const diffInHours = (orderDateTime - now) / (1000 * 60 * 60);
+    function sendWhatsApp() {
+        const rows = document.querySelectorAll('.meal-row');
+        let mealDetails = "New Order Details:%0A";
+        
+        rows.forEach(row => {
+            const mealId = row.querySelector('.meal-select').value;
+            const qty = row.querySelector('.qty-input').value;
+            mealDetails += `- ${menu[mealId].name} (${qty} pcs)%0A`;
+        });
 
-    if (diffInHours < 2) {
-        alert("Please place your order at least 2 hours before the delivery time.");
-        return;
+        const date = document.getElementById('delivery-date').value;
+        const time = document.getElementById('delivery-time').value;
+        const address = document.getElementById('delivery-address').value;
+        const payment = document.getElementById('payment-method').value;
+        const total = document.getElementById('subtotal').innerText;
+
+        const message = `${mealDetails}%0A📅 Date: ${date}%0A🕒 Time: ${time}%0A🏠 Address: ${address}%0A💰 Payment: ${payment}%0A💵 Subtotal: BDT ${total}%0A%0A(Note: Delivery charge to be added)`;
+        
+        // Opening WhatsApp with your helpline number
+        window.open(`https://wa.me/8801830365120?text=${message}`, '_blank');
     }
 
-    // If all valid, send to WhatsApp
-    const phone = "8801830365120"; // Your helpline number
-    const message = `*NEW ORDER - GOFIT*%0A%0A` +
-                    `*Meal:* ${meal}%0A` +
-                    `*Quantity:* ${qty}%0A` +
-                    `*Date:* ${dateInput}%0A` +
-                    `*Time:* ${timeInput}%0A` +
-                    `*Address:* ${address}%0A` +
-                    `*Payment:* ${payment}%0A%0A` +
-                    `_Delivery charge will be added to the total._`;
-
-    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
-}
-
-// Simple dynamic summary update
-document.getElementById('orderForm').addEventListener('input', function() {
-    const meal = document.getElementById('meal').value || "...";
-    const qty = document.getElementById('quantity').value || "0";
-    document.getElementById('summaryText').innerText = `${qty} x ${meal}`;
-});
+    // Initialize with one row
+    addMealRow();
 </script>
 
 </body>
