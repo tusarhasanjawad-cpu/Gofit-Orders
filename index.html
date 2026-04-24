@@ -1,191 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Kitchen Order - Jamal Khan</title>
-    <style>
-        :root { --primary: #25D366; --error: #d93025; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; }
-        .meal-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; background: #fff; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
-        select, input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
-        .meal-select { flex-grow: 1; }
-        .qty-input { width: 60px; }
-        .del-btn { background: #ff4444; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; }
-        .add-btn { background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input[type="text"], input[type="date"], input[type="time"] { width: 100%; box-sizing: border-box; }
-        .summary { background: #f1f1f1; padding: 15px; border-radius: 8px; margin-top: 20px; }
-        .warning { color: var(--error); font-size: 12px; margin-top: 5px; display: none; }
-        .invalid { border-color: var(--error) !important; background-color: #fff8f8; }
-        #send-btn { width: 100%; padding: 15px; background: #25D366; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        #send-btn:disabled { background: #ccc; cursor: not-allowed; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOFIT MEAL BD</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: #0f172a;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.menu-item input {
+    width: 60px;
+    padding: 5px;
+}
+
+input, select, button, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #22c55e;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #16a34a;
+}
+
+.total {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.summary {
+    background: #ecfdf5;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+</style>
 </head>
+
 <body>
 
+<header>
+<h1>GOFIT MEAL BD</h1>
+<p>Healthy Cloud Kitchen | Galleria, Foys Lake Gate, Chittagong</p>
+<p>📞 01830365120</p>
+</header>
+
 <div class="container">
-    <h2>Cloud Kitchen - Jamal Khan</h2>
-    <p style="text-align: center; font-size: 14px;">Helpline: 01830365120</p>
-    <hr>
 
-    <div id="meal-container">
-        </div>
-    
-    <button class="add-btn" onclick="addMealRow()">+ Add More</button>
+<div class="card">
+<h2>Menu</h2>
 
-    <div class="form-group">
-        <label>Delivery Date</label>
-        <input type="date" id="delivery-date" onchange="validateForm()">
-        <p id="date-warn" class="warning">Previous dates are not selectable.</p>
-    </div>
+<div id="menu"></div>
 
-    <div class="form-group">
-        <label>Delivery Time (1:00 PM - 9:00 PM)</label>
-        <input type="time" id="delivery-time" onchange="validateForm()">
-        <p id="time-warn" class="warning">Orders must be between 1 PM - 9 PM and 2 hours in advance.</p>
-    </div>
+<p class="total">Total: BDT <span id="total">0</span></p>
+</div>
 
-    <div class="form-group">
-        <label>Delivery Address</label>
-        <input type="text" id="delivery-address" placeholder="House/Flat, Road, Area" oninput="validateForm()">
-    </div>
+<div class="card">
+<h2>Customer Details</h2>
 
-    <div class="form-group">
-        <label>Payment Method</label>
-        <select id="payment-method" style="width: 100%;">
-            <option value="Cash">Cash</option>
-            <option value="bKash">bKash</option>
-        </select>
-    </div>
+<input type="text" id="name" placeholder="Your Name" required>
+<input type="text" id="phone" placeholder="Phone Number" required>
+<textarea id="address" placeholder="Delivery Address" required></textarea>
 
-    <div class="summary">
-        <strong>Order Summary:</strong>
-        <div id="summary-list"></div>
-        <hr>
-        <strong>Subtotal: BDT <span id="subtotal">0</span></strong>
-        <p style="font-size: 12px; color: #666; margin-top: 5px;">* Delivery charge will be added to this amount</p>
-    </div>
+<label>Delivery Date</label>
+<input type="date" id="date">
 
-    <button id="send-btn" onclick="sendWhatsApp()" disabled>Send Order via WhatsApp</button>
+<label>Delivery Time</label>
+<select id="time">
+<option value="">Select Time</option>
+<option>1:30 PM</option>
+<option>2:00 PM</option>
+<option>3:00 PM</option>
+<option>4:00 PM</option>
+<option>5:00 PM</option>
+<option>6:00 PM</option>
+<option>7:00 PM</option>
+<option>8:00 PM</option>
+<option>9:00 PM</option>
+</select>
+
+</div>
+
+<div class="card summary">
+<h2>Order Summary</h2>
+<div id="summary"></div>
+</div>
+
+<button onclick="submitOrder()">Place Order via WhatsApp</button>
+
 </div>
 
 <script>
-    const menu = {
-        "1": { name: "Hummus with Grilled Chicken & Veggies", price: 500 },
-        "2": { name: "Mediterranean Ground Beef Stir Fry", price: 700 },
-        "3": { name: "Chicken Caesar Salad", price: 450 },
-        "4": { name: "Glass Noodles with King Prawn", price: 750 },
-        "5": { name: "Grilled Lemon Herb Med. Chicken Salad", price: 800 },
-        "6": { name: "Chicken Burrito Bowl", price: 450 },
-        "7": { name: "Tomato Poached Fish with Chile Oil", price: 600 },
-        "8": { name: "Thai Lettuce Wraps - Larb Gai", price: 400 },
-        "9": { name: "Tuna Salad Sandwich (Brown Bread)", price: 450 },
-        "10": { name: "Tuna Mayo Rice Bowl", price: 400 }
-    };
 
-    // Set minimum date to today
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('delivery-date').setAttribute('min', today);
+const menuItems = [
+{name:"Hummus with Grilled Chicken & Veggies", price:500},
+{name:"High-Protein Chicken Rice Bowl", price:500},
+{name:"Mediterranean Ground Beef Stir Fry", price:550},
+{name:"Ginger-Soy Beef with Steamed Veggies", price:550},
+{name:"Thai Chicken Lettuce Wraps", price:550},
+{name:"Lean Chicken Caesar Bowl", price:550},
+{name:"Loaded Tuna on Toast", price:550},
+{name:"Lean Poached Fish", price:550},
+{name:"Thai Prawn Bowl", price:600},
+{name:"Grilled Chicken Salad with Tzatziki Sauce", price:600}
+];
 
-    function addMealRow() {
-        const container = document.getElementById('meal-container');
-        const div = document.createElement('div');
-        div.className = 'meal-row';
-        
-        let options = '<option value="">Select a Meal</option>';
-        for (let id in menu) {
-            options += `<option value="${id}">${menu[id].name} - BDT ${menu[id].price}</option>`;
+const menuDiv = document.getElementById("menu");
+
+menuItems.forEach((item, index) => {
+    menuDiv.innerHTML += `
+    <div class="menu-item">
+        <span>${item.name} (BDT ${item.price})</span>
+        <input type="number" min="0" value="0" id="qty${index}" onchange="updateTotal()">
+    </div>
+    `;
+});
+
+function updateTotal() {
+    let total = 0;
+    let summaryText = "";
+
+    menuItems.forEach((item, index) => {
+        let qty = document.getElementById(`qty${index}`).value;
+        if(qty > 0){
+            total += qty * item.price;
+            summaryText += `${item.name} x${qty} = BDT ${qty * item.price}<br>`;
         }
+    });
 
-        div.innerHTML = `
-            <select class="meal-select" onchange="validateForm()">${options}</select>
-            <input type="number" class="qty-input" value="1" min="1" max="5" oninput="validateForm()">
-            <button class="del-btn" onclick="this.parentElement.remove(); validateForm()">✕</button>
-        `;
-        container.appendChild(div);
-        validateForm();
+    document.getElementById("total").innerText = total;
+    document.getElementById("summary").innerHTML = summaryText;
+}
+
+function submitOrder(){
+
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+    let address = document.getElementById("address").value;
+    let date = document.getElementById("date").value;
+    let time = document.getElementById("time").value;
+    let total = document.getElementById("total").innerText;
+    let summary = document.getElementById("summary").innerText;
+
+    if(!name || !phone || !address || !date || !time){
+        alert("Please fill all required fields");
+        return;
     }
 
-    function validateForm() {
-        let isValid = true;
-        let subtotal = 0;
-        let summaryHtml = "";
-        
-        // Validate Meals
-        const rows = document.querySelectorAll('.meal-row');
-        rows.forEach(row => {
-            const mealId = row.querySelector('.meal-select').value;
-            const qty = parseInt(row.querySelector('.qty-input').value);
-            
-            if (!mealId || isNaN(qty) || qty < 1 || qty > 5) {
-                isValid = false;
-            } else {
-                const item = menu[mealId];
-                subtotal += item.price * qty;
-                summaryHtml += `<div>${item.name} x ${qty} = ${item.price * qty}</div>`;
-            }
-        });
+    let msg = `*GOFIT MEAL BD ORDER*%0A
+Name: ${name}%0A
+Phone: ${phone}%0A
+Address: ${address}%0A
+Date: ${date}%0A
+Time: ${time}%0A
+--------------------%0A
+${summary}%0A
+Total: BDT ${total}`;
 
-        if (rows.length === 0) isValid = false;
+    let url = `https://wa.me/8801830365120?text=${msg}`;
 
-        // Validate Date & Time
-        const dateVal = document.getElementById('delivery-date').value;
-        const timeVal = document.getElementById('delivery-time').value;
-        const addressVal = document.getElementById('delivery-address').value;
+    window.open(url, '_blank');
+}
 
-        const timeWarn = document.getElementById('time-warn');
-        if (timeVal) {
-            const hour = parseInt(timeVal.split(':')[0]);
-            const now = new Date();
-            const selectedDate = new Date(dateVal + 'T' + timeVal);
-            const diffInHours = (selectedDate - now) / (1000 * 60 * 60);
+// Auto set minimum date = tomorrow
+let today = new Date();
+today.setDate(today.getDate() + 1);
+document.getElementById("date").min = today.toISOString().split("T")[0];
 
-            if (hour < 13 || hour >= 21 || diffInHours < 2) {
-                isValid = false;
-                timeWarn.style.display = 'block';
-            } else {
-                timeWarn.style.display = 'none';
-            }
-        } else {
-            isValid = false;
-        }
-
-        if (!dateVal || !addressVal) isValid = false;
-
-        // Update UI
-        document.getElementById('subtotal').innerText = subtotal;
-        document.getElementById('summary-list').innerHTML = summaryHtml;
-        document.getElementById('send-btn').disabled = !isValid;
-    }
-
-    function sendWhatsApp() {
-        const rows = document.querySelectorAll('.meal-row');
-        let mealDetails = "New Order Details:%0A";
-        
-        rows.forEach(row => {
-            const mealId = row.querySelector('.meal-select').value;
-            const qty = row.querySelector('.qty-input').value;
-            mealDetails += `- ${menu[mealId].name} (${qty} pcs)%0A`;
-        });
-
-        const date = document.getElementById('delivery-date').value;
-        const time = document.getElementById('delivery-time').value;
-        const address = document.getElementById('delivery-address').value;
-        const payment = document.getElementById('payment-method').value;
-        const total = document.getElementById('subtotal').innerText;
-
-        const message = `${mealDetails}%0A📅 Date: ${date}%0A🕒 Time: ${time}%0A🏠 Address: ${address}%0A💰 Payment: ${payment}%0A💵 Subtotal: BDT ${total}%0A%0A(Note: Delivery charge to be added)`;
-        
-        // Opening WhatsApp with your helpline number
-        window.open(`https://wa.me/8801830365120?text=${message}`, '_blank');
-    }
-
-    // Initialize with one row
-    addMealRow();
 </script>
 
 </body>
