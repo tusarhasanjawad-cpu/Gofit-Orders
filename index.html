@@ -4,47 +4,49 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GOFIT MEAL BD</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body{font-family:'Poppins',sans-serif;margin:0;background:#f5f7fa}
-header{background:#0f172a;color:#fff;padding:20px;text-align:center}
-.container{max-width:1100px;margin:auto;padding:20px}
-.card{background:#fff;border-radius:14px;padding:15px;margin-bottom:15px;box-shadow:0 6px 15px rgba(0,0,0,0.06)}
-.flex{display:flex;justify-content:space-between;align-items:center}
-button{background:#22c55e;color:#fff;border:none;padding:12px;width:100%;border-radius:10px;font-size:16px;cursor:pointer}
-input,select{padding:10px;width:100%;margin-top:6px;margin-bottom:10px;border-radius:8px;border:1px solid #ddd}
-.summary{background:#fff;padding:15px;border-radius:12px}
-.total{font-size:22px;font-weight:600;margin-top:10px}
-.badge{background:#22c55e;color:#fff;padding:4px 8px;border-radius:6px;font-size:12px}
+body{margin:0;font-family:'Oswald',sans-serif;background:linear-gradient(90deg,#000,#666);color:#000}
+.container{max-width:900px;margin:auto;padding:20px}
+.logo{text-align:center;color:#fff;font-size:40px;margin-bottom:20px}
+.input{background:#ddd;border-radius:40px;padding:15px;margin-bottom:10px;text-align:center}
+.section-title{color:#fff;text-align:center;margin:20px 0;font-size:28px}
+.panel{background:rgba(255,255,255,0.2);padding:15px;border-radius:20px;margin-bottom:15px}
+.row{display:flex;gap:10px;margin-bottom:10px}
+.row div{flex:1}
+select,input{width:100%;padding:12px;border-radius:30px;border:none;text-align:center}
+.btn{background:#5cc046;color:#000;padding:15px;border:none;border-radius:30px;width:100%;font-size:18px;cursor:pointer;margin-top:10px}
+.summary{background:#5cc046;padding:20px;border-radius:25px;min-height:150px;white-space:pre-line}
+.total{color:#fff;text-align:center;font-size:22px;margin-top:10px}
+.note{color:#fff;text-align:center;font-size:14px;margin-top:5px}
 </style>
 </head>
 <body>
-<header>
-<h1>GOFIT MEAL BD</h1>
-<p>Healthy Cloud Kitchen | Chittagong</p>
-</header>
 <div class="container">
 
-<h2>Customer Info</h2>
-<div class="card">
-<input id="name" placeholder="Full Name">
-<input id="phone" placeholder="Phone Number">
-<input id="address" placeholder="Delivery Address">
-</div>
+<div class="logo">GOFIT Meal</div>
 
-<h2>Menu</h2>
-<div id="menu"></div>
+<div class="input"><input id="name" placeholder="NAME"></div>
+<div class="input"><input id="phone" placeholder="PHONE NO"></div>
+<div class="input"><input id="address" placeholder="ADDRESS"></div>
 
-<h2>Order Summary</h2>
+<div class="section-title">ORDER SELECTION PANEL</div>
+
+<div id="panels"></div>
+
+<button class="btn" onclick="addPanel()">ADD MORE MEAL</button>
+
+<div class="section-title">ORDER SUMMARY</div>
 <div class="summary" id="summary">No items selected</div>
-<p class="total">Total: BDT <span id="total">0</span></p>
+<div class="total">Total: BDT <span id="total">0</span></div>
+<div class="note">* Delivery Charge will be Added</div>
 
-<button onclick="submitOrder()">Order via WhatsApp</button>
+<button class="btn" onclick="submitOrder()">Submit On WhatsApp</button>
 
 </div>
 
 <script>
-const menuItems=[
+const menu=[
 {name:"Hummus with Grilled Chicken & Veggies",price:500},
 {name:"High-Protein Chicken Rice Bowl",price:500},
 {name:"Mediterranean Ground Beef Stir Fry",price:550},
@@ -57,68 +59,69 @@ const menuItems=[
 {name:"Grilled Chicken Salad with Tzatziki Sauce",price:600}
 ];
 
-const menuDiv=document.getElementById('menu');
+function addPanel(){
+let container=document.getElementById('panels');
+let index=document.querySelectorAll('.panel').length;
 
-menuItems.forEach((item,index)=>{
-const div=document.createElement('div');
-div.className='card';
+let div=document.createElement('div');
+div.className='panel';
+
 div.innerHTML=`
-<div class="flex">
-<strong>${item.name}</strong>
-<span class="badge">BDT ${item.price}</span>
+<div class="row">
+<div>
+<select id="meal${index}" onchange="updateSummary()">
+<option value="">SELECT YOUR MEAL</option>
+${menu.map((m,i)=>`<option value="${i}">${m.name} (BDT ${m.price})</option>`).join('')}
+</select>
 </div>
-<label>Quantity</label>
-<input type="number" min="0" value="0" id="qty${index}" onchange="updateSummary()">
-<label>Delivery Date</label>
-<input type="date" id="date${index}" onchange="updateSummary()">
-<label>Delivery Time</label>
+<div>
+<input type="number" id="qty${index}" placeholder="QNT" min="1" onchange="updateSummary()">
+</div>
+</div>
+
+<div class="row">
+<div><input type="date" id="date${index}" onchange="updateSummary()"></div>
+<div>
 <select id="time${index}" onchange="updateSummary()">
-<option value="">Select Time</option>
+<option value="">TIME</option>
 <option>1:30 PM</option>
-<option>2:00 PM</option>
-<option>2:30 PM</option>
 <option>3:00 PM</option>
-<option>3:30 PM</option>
-<option>4:00 PM</option>
-<option>4:30 PM</option>
 <option>5:00 PM</option>
-<option>5:30 PM</option>
-<option>6:00 PM</option>
-<option>6:30 PM</option>
 <option>7:00 PM</option>
-<option>7:30 PM</option>
-<option>8:00 PM</option>
-<option>8:30 PM</option>
 <option>9:00 PM</option>
 </select>
+</div>
+</div>
 `;
-menuDiv.appendChild(div);
-});
+
+container.appendChild(div);
+}
 
 function updateSummary(){
-let summary="";
+let panels=document.querySelectorAll('.panel');
+let text="";
 let total=0;
 
-menuItems.forEach((item,i)=>{
+panels.forEach((p,i)=>{
+let mealIndex=document.getElementById(`meal${i}`).value;
 let qty=parseInt(document.getElementById(`qty${i}`).value)||0;
 let date=document.getElementById(`date${i}`).value;
 let time=document.getElementById(`time${i}`).value;
 
-if(qty>0){
+if(mealIndex!=="" && qty>0){
+let item=menu[mealIndex];
 let price=item.price*qty;
+
 total+=price;
-summary+=`• ${item.name} x${qty}\n  Date: ${date} Time: ${time}\n  BDT ${price}\n\n`;
+
+text+=`• ${item.name} x${qty}\n${date} ${time}\nBDT ${price}\n\n`;
 }
 });
 
-if(summary==="") summary="No items selected";
+if(text==="") text="No items selected";
 
-document.getElementById('summary').innerText=summary;
+document.getElementById('summary').innerText=text;
 document.getElementById('total').innerText=total;
-}
-
-function generateOrderID(){
-return 'GF' + Date.now().toString().slice(-6);
 }
 
 function submitOrder(){
@@ -128,22 +131,19 @@ let address=document.getElementById('address').value;
 let summary=document.getElementById('summary').innerText;
 let total=document.getElementById('total').innerText;
 
-if(!name||!phone||!address||summary==="No items selected"){
-alert('Please fill all required fields');
+if(!name||!phone||!address||summary==='No items selected'){
+alert('Fill all fields');
 return;
 }
 
-let orderID=generateOrderID();
+let msg=`GOFIT MEAL BD ORDER\n\nName: ${name}\nPhone: ${phone}\nAddress: ${address}\n\n${summary}\nTotal: BDT ${total}\n* Delivery Charge will be Added`;
 
-let message=`\n🟢 GOFIT MEAL BD ORDER\n\n🆔 Order ID: ${orderID}\n👤 Name: ${name}\n📞 Phone: ${phone}\n📍 Address: ${address}\n\n🍽️ Items:\n${summary}\n💰 Total: BDT ${total}\n\nThank you!`;
-
-let encodedMsg=encodeURIComponent(message);
-
-// Mobile deep link + fallback
-let whatsappURL=`https://wa.me/8801830365120?text=${encodedMsg}`;
-
-window.open(whatsappURL,'_blank');
+let url=`https://wa.me/8801830365120?text=${encodeURIComponent(msg)}`;
+window.open(url,'_blank');
 }
+
+// initial panel
+addPanel();
 </script>
 
 </body>
